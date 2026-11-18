@@ -1,6 +1,6 @@
 {
   "id": "gift-item",
-  "title": "Give Item",
+  "title": "Gift Item",
   "description": "Hand items and coins to other characters by right-click, a purse button or drag-and-drop onto a token, with an optional accept prompt and chat announcement for D&D 5e.",
   "version": "0.1.0",
   "authors": [
