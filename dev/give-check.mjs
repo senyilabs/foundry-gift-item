@@ -26,7 +26,7 @@ const check = (label, ok, detail = "") => console.log(`${ok ? "PASS" : "FAIL"}  
 let gm = await login("Tester");
 await gm.evaluate(async () => {
   const config = game.settings.get("core", "moduleConfiguration");
-  if (!config["give-item"]) await game.settings.set("core", "moduleConfiguration", { ...config, "give-item": true });
+  if (!config["gift-item"]) await game.settings.set("core", "moduleConfiguration", { ...config, "gift-item": true });
   if (!game.users.getName("Player B")) await User.create({ name: "Player B", role: CONST.USER_ROLES.PLAYER });
 });
 await gm.evaluate(() => game.socket.emit("reload"));
@@ -34,11 +34,11 @@ await sleep(1500);
 await gm.close();
 gm = await login("Tester");
 await sleep(2000);
-check("module active", await gm.evaluate(() => game.modules.get("give-item")?.active));
+check("module active", await gm.evaluate(() => game.modules.get("gift-item")?.active));
 
 const ids = await gm.evaluate(async () => {
-  await game.settings.set("give-item", "accept", true);
-  await game.settings.set("give-item", "announce", true);
+  await game.settings.set("gift-item", "accept", true);
+  await game.settings.set("gift-item", "announce", true);
   for (const s of game.scenes.filter((s) => s.getFlag("world", "giTest"))) await s.delete();
   for (const a of game.actors.filter((a) => a.getFlag("world", "giTest"))) await a.delete();
   for (const m of game.messages.contents) await m.delete();
@@ -99,7 +99,7 @@ async function dialog(page, action, fields = {}) {
   return text;
 }
 const give = (itemId, receiverId) => pa.evaluate(({ aldric, itemId, receiverId }) => {
-  game.modules.get("give-item").api.giveItem(game.actors.get(aldric).items.get(itemId), receiverId);
+  game.modules.get("gift-item").api.giveItem(game.actors.get(aldric).items.get(itemId), receiverId);
 }, { ...ids, itemId, receiverId });
 
 // 1. Two of three potions, accepted: they stack onto Brenna's potion.
@@ -143,7 +143,7 @@ s = await state();
 check("container goes with contents", s.brenna.items.includes("Backpack×1") && s.brenna.items.includes("Rope×1 in") && !s.aldric.items.includes("Rope×1 in"), JSON.stringify(s));
 
 // 6. Coins: 20 gp.
-await pa.evaluate(({ aldric }) => { game.modules.get("give-item").api.giveCoins(game.actors.get(aldric)); }, ids);
+await pa.evaluate(({ aldric }) => { game.modules.get("gift-item").api.giveCoins(game.actors.get(aldric)); }, ids);
 console.log("coins dialog:", await dialog(pa, "ok", { gp: 20, receiver: ids.brenna }));
 await dialog(pb, "yes");
 await sleep(1500);
@@ -153,23 +153,23 @@ check("coins moved", s.aldric.gp === 30 && s.brenna.gp === 25, `${s.aldric.gp} /
 // 7. A forged offer: Player B claims to give Aldric's potion to Brenna. The GM must ignore it.
 await pb.evaluate(({ aldric, brenna, potion }) => {
   const a = game.actors.get(aldric), r = game.actors.get(brenna);
-  game.socket.emit("module.give-item", { action: "offer", offer: { id: "forged", giver: a.uuid, giverName: a.name,
+  game.socket.emit("module.gift-item", { action: "offer", offer: { id: "forged", giver: a.uuid, giverName: a.name,
     receiver: r.uuid, receiverName: r.name, responder: game.user.id, itemId: potion, itemName: "x", amount: 1 } });
-  game.socket.emit("module.give-item", { action: "answer", id: "forged", accepted: true });
+  game.socket.emit("module.gift-item", { action: "answer", id: "forged", accepted: true });
 }, ids);
 await sleep(1500);
 s = await state();
 check("forged offer ignored", s.aldric.items.includes("Potion of Healing×1"), JSON.stringify(s.aldric.items));
 
 // 8. Without the accept setting it goes straight over.
-await gm.evaluate(() => game.settings.set("give-item", "accept", false));
+await gm.evaluate(() => game.settings.set("gift-item", "accept", false));
 await sleep(500);
 await give(ids.potion, ids.brenna);
 await dialog(pa, "ok");
 await sleep(1500);
 s = await state();
 check("no prompt when accept is off", !s.aldric.items.some((i) => i.startsWith("Potion")) && s.brenna.items.includes("Potion of Healing×4"), JSON.stringify(s));
-await gm.evaluate(() => game.settings.set("give-item", "accept", true));
+await gm.evaluate(() => game.settings.set("gift-item", "accept", true));
 
 // 9. The sheet: context menu entry and coin button for Player A.
 const sheet = await pa.evaluate(async ({ aldric, brenna }) => {
@@ -180,7 +180,7 @@ const sheet = await pa.evaluate(async ({ aldric, brenna }) => {
   const el = actor.sheet.element;
   el.querySelector('[data-tab="inventory"]')?.click();
   await new Promise((r) => setTimeout(r, 800));
-  const coin = !!el.querySelector("section.currency .give-item-coins");
+  const coin = !!el.querySelector("section.currency .gift-item-coins");
   const row = el.querySelector(".inventory-element [data-item-id]");
   row?.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, clientX: 300, clientY: 300 }));
   await new Promise((r) => setTimeout(r, 800));

@@ -1,5 +1,5 @@
 {
-  "id": "give-item",
+  "id": "gift-item",
   "title": "Give Item",
   "description": "Hand items and coins to other characters by right-click, a purse button or drag-and-drop onto a token, with an optional accept prompt and chat announcement for D&D 5e.",
   "version": "0.1.0",
@@ -35,9 +35,9 @@
       "path": "lang/en.json"
     }
   ],
-  "url": "https://github.com/senyilabs/foundry-give-item",
-  "bugs": "https://github.com/senyilabs/foundry-give-item/issues",
+  "url": "https://github.com/senyilabs/foundry-gift-item",
+  "bugs": "https://github.com/senyilabs/foundry-gift-item/issues",
   "license": "LICENSE",
-  "manifest": "https://github.com/senyilabs/foundry-give-item/releases/latest/download/module.json",
-  "download": "https://github.com/senyilabs/foundry-give-item/releases/download/v0.1.0/module.zip"
+  "manifest": "https://github.com/senyilabs/foundry-gift-item/releases/latest/download/module.json",
+  "download": "https://github.com/senyilabs/foundry-gift-item/releases/download/v0.1.0/module.zip"
 }

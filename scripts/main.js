@@ -1,6 +1,6 @@
 import { recipients, responder, findStack, planItem, planCoins } from "./give.js";
 
-const MODULE_ID = "give-item";
+const MODULE_ID = "gift-item";
 const SOCKET = `module.${MODULE_ID}`;
 const { DialogV2 } = foundry.applications.api;
 
@@ -245,10 +245,10 @@ Hooks.on("renderActorSheetV2", (app, html) => {
   const actor = app.actor;
   if (game.system.id !== "dnd5e" || !actor?.isOwner || actor.system.isGroup || !actor.system.currency) return;
   const purse = html.querySelector("section.currency");
-  if (!purse || purse.querySelector(".give-item-coins")) return;
+  if (!purse || purse.querySelector(".gift-item-coins")) return;
   const button = document.createElement("button");
   button.type = "button";
-  button.className = "give-item-coins unbutton always-interactive";
+  button.className = "gift-item-coins unbutton always-interactive";
   button.dataset.tooltip = "GIVEITEM.GiveCoins";
   button.setAttribute("aria-label", t("GIVEITEM.GiveCoins"));
   button.innerHTML = `<i class="fa-solid fa-hand-holding-dollar" inert></i>`;
